@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us - CureCom{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="about-hero py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">About CureCom</h1>
+                <p class="lead text-muted mb-4">Your trusted partner in health and beauty, dedicated to bringing quality products and wellness solutions to your doorstep.</p>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'mainapp:product_list' %}" class="btn btn-primary">Shop Now</a>
+                    <a href="{% url 'mainapp:contact' %}" class="btn btn-outline-primary">Contact Us</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="/static/images/products/camera.png" alt="About CureCom" class="img-fluid rounded-4 shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission & Vision -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="icon-box bg-primary bg-opacity-10 rounded-3 p-3 me-3">
+                                <i class="fas fa-bullseye text-primary fa-2x"></i>
+                            </div>
+                            <h3 class="h4 mb-0">Our Mission</h3>
+                        </div>
+                        <p class="text-muted mb-0">To provide accessible, high-quality health and beauty products that enhance well-being and confidence, while maintaining the highest standards of safety and efficacy.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="icon-box bg-primary bg-opacity-10 rounded-3 p-3 me-3">
+                                <i class="fas fa-eye text-primary fa-2x"></i>
+                            </div>
+                            <h3 class="h4 mb-0">Our Vision</h3>
+                        </div>
+                        <p class="text-muted mb-0">To become the leading destination for health and beauty products, known for our commitment to quality, customer satisfaction, and sustainable practices.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Our Core Values</h2>
+            <p class="text-muted">The principles that guide everything we do</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <div class="icon-box bg-primary bg-opacity-10 rounded-3 p-3 mb-4 mx-auto">
+                            <i class="fas fa-heart text-primary fa-2x"></i>
+                        </div>
+                        <h4 class="h5 mb-3">Quality</h4>
+                        <p class="text-muted mb-0">We source and provide only the highest quality products, ensuring safety and effectiveness.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <div class="icon-box bg-primary bg-opacity-10 rounded-3 p-3 mb-4 mx-auto">
+                            <i class="fas fa-handshake text-primary fa-2x"></i>
+                        </div>
+                        <h4 class="h5 mb-3">Trust</h4>
+                        <p class="text-muted mb-0">Building lasting relationships with our customers through transparency and reliability.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <div class="icon-box bg-primary bg-opacity-10 rounded-3 p-3 mb-4 mx-auto">
+                            <i class="fas fa-leaf text-primary fa-2x"></i>
+                        </div>
+                        <h4 class="h5 mb-3">Sustainability</h4>
+                        <p class="text-muted mb-0">Committed to eco-friendly practices and sustainable product sourcing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats -->
+<section class="py-5 bg-dark text-white">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-6 col-md-3">
+                <div class="text-center">
+                    <h3 class="display-4 fw-bold mb-2">500+</h3>
+                    <p class="mb-0">Products</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="text-center">
+                    <h3 class="display-4 fw-bold mb-2">10K+</h3>
+                    <p class="mb-0">Happy Customers</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="text-center">
+                    <h3 class="display-4 fw-bold mb-2">50+</h3>
+                    <p class="mb-0">Brands</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="text-center">
+                    <h3 class="display-4 fw-bold mb-2">24/7</h3>
+                    <p class="mb-0">Support</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Meet Our Team</h2>
+            <p class="text-muted">The passionate individuals behind CureCom</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="/static/images/glow.jpg" class="card-img-top" alt="Team Member">
+                    <div class="card-body p-4 text-center">
+                        <h5 class="card-title mb-1">Dereje Amare</h5>
+                        <p class="text-muted mb-3">Founder & CEO</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="#" class="text-muted"><i class="fab fa-linkedin fa-lg"></i></a>
+                            <a href="#" class="text-muted"><i class="fab fa-twitter fa-lg"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="/static/images/glow.jpg" class="card-img-top" alt="Team Member">
+                    <div class="card-body p-4 text-center">
+                        <h5 class="card-title mb-1">Dereje Amare</h5>
+                        <p class="text-muted mb-3">Head of Operations</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="#" class="text-muted"><i class="fab fa-linkedin fa-lg"></i></a>
+                            <a href="#" class="text-muted"><i class="fab fa-twitter fa-lg"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="/static/images/glow.jpg" class="card-img-top" alt="Team Member">
+                    <div class="card-body p-4 text-center">
+                        <h5 class="card-title mb-1">Dereje Amare</h5>
+                        <p class="text-muted mb-3">Product Manager</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="#" class="text-muted"><i class="fab fa-linkedin fa-lg"></i></a>
+                            <a href="#" class="text-muted"><i class="fab fa-twitter fa-lg"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 fw-bold mb-4">Join Us in Our Journey</h2>
+                <p class="lead text-muted mb-4">Be part of our growing community of health and beauty enthusiasts.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'mainapp:product_list' %}" class="btn btn-primary">Shop Now</a>
+                    <a href="{% url 'mainapp:contact' %}" class="btn btn-outline-primary">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-hero {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 6rem 0;
+    }
+
+    .icon-box {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+
+    .team-member img {
+        height: 300px;
+        object-fit: cover;
+    }
+
+    @media (max-width: 768px) {
+        .about-hero {
+            padding: 4rem 0;
+        }
+
+        .display-4 {
+            font-size: 2.5rem;
+        }
+
+        .team-member img {
+            height: 250px;
+        }
+    }
+</style>
+{% endblock %} 

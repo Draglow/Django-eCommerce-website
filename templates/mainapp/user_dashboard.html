@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+{% load static %}
+{% load message_filters %}
+
+{% block title %}Dashboard - E-Commerce Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar Navigation -->
+        <div class="col-lg-3 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center mb-4">
+                        <img src="{% if user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
+                             alt="Profile" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                        <div>
+                            <h6 class="mb-0">{{ user.get_full_name|default:user.username }}</h6>
+                            <small class="text-muted">{{ user.email }}</small>
+                        </div>
+                    </div>
+                    
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'mainapp:user_dashboard' %}" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                        </a>
+                        <a href="{% url 'mainapp:user_products' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-box me-2"></i> My Products
+                        </a>
+                        <a href="{% url 'mainapp:conversations' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-comments me-2"></i> Messages
+                            {% if unread_count > 0 %}
+                            <span class="badge bg-primary rounded-pill float-end">{{ unread_count }}</span>
+                            {% endif %}
+                        </a>
+                        <a href="{% url 'mainapp:orders' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-shopping-bag me-2"></i> Orders
+                        </a>
+                        <a href="{% url 'mainapp:profile' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-user me-2"></i> Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <!-- Quick Stats -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-box fa-2x text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0">Active Products</h6>
+                                    <h3 class="mb-0">{{ active_products_count }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-comments fa-2x text-success"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0">Unread Messages</h6>
+                                    <h3 class="mb-0">{{ unread_count }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-shopping-bag fa-2x text-info"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0">Total Orders</h6>
+                                    <h3 class="mb-0">{{ total_orders }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Products -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-box me-2"></i> Recent Products</h5>
+                        <a href="{% url 'mainapp:create_product' %}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus"></i> Add New
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    {% if recent_products %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in recent_products %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+                                                 class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                            <div>
+                                                <h6 class="mb-0">{{ product.name }}</h6>
+                                                <small class="text-muted">{{ product.created_at|date:"M d, Y" }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ product.category.name }}</td>
+                                    <td>${{ product.price }}</td>
+                                    <td>
+                                        {% if product.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-warning">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="{% url 'mainapp:edit_product' product.slug %}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#deleteModal{{ product.id }}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                        <p class="text-muted h5">You haven't listed any products yet.</p>
+                        <a href="{% url 'mainapp:create_product' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Add Your First Product
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Messages -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-comments me-2"></i> Recent Messages</h5>
+                        <a href="{% url 'mainapp:conversations' %}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-eye"></i> View All
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    {% if recent_conversations %}
+                    <div class="list-group list-group-flush">
+                        {% for conversation in recent_conversations %}
+                        <a href="{% url 'mainapp:conversation_detail' conversation.id %}" 
+                           class="list-group-item list-group-item-action border-0 p-3">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ conversation.product.image.url }}" 
+                                     alt="{{ conversation.product.name }}"
+                                     class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-1">{{ conversation.product.name }}</h6>
+                                        <small class="text-muted">
+                                            {{ conversation.updated_at|timesince }} ago
+                                        </small>
+                                    </div>
+                                    <p class="mb-1 text-muted">
+                                        {% if conversation.buyer == user %}
+                                        Seller: {{ conversation.seller.username }}
+                                        {% else %}
+                                        Buyer: {{ conversation.buyer.username }}
+                                        {% endif %}
+                                    </p>
+                                    <p class="mb-0 text-truncate">
+                                        {% with last_message=conversation.messages.last %}
+                                        {% if last_message %}
+                                        <small class="{% if not last_message.is_read and last_message.sender != user %}fw-bold{% endif %}">
+                                            {{ last_message.content|truncatewords:20 }}
+                                        </small>
+                                        {% endif %}
+                                        {% endwith %}
+                                    </p>
+                                </div>
+                                {% with unread_count=conversation.messages.all|length %}
+                                {% if unread_count > 0 %}
+                                <span class="badge bg-primary rounded-pill ms-2">
+                                    {{ unread_count }}
+                                </span>
+                                {% endif %}
+                                {% endwith %}
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                        <p class="text-muted h5">You don't have any messages yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .list-group-item:hover {
+        background-color: var(--bg-gray);
+    }
+    
+    .list-group-item {
+        transition: all 0.3s ease;
+    }
+    
+    .list-group-item:hover {
+        transform: translateX(5px);
+    }
+    
+    .card {
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg) !important;
+    }
+    
+    .table td {
+        vertical-align: middle;
+    }
+</style>
+{% endblock %} 

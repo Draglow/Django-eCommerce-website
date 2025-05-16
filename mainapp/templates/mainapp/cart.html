@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    {% csrf_token %}
+    <h2>Your Cart</h2>
+    {% if cart_items %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                        <tr data-product-id="{{ item.product.id }}">
+                            <td>
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 50px; height: 50px; object-fit: cover;">
+                                {% endif %}
+                                {{ item.product.name }}
+                            </td>
+                            <td>${{ item.product.price }}</td>
+                            <td>
+                                <div class="input-group" style="width: 120px;">
+                                    <button class="btn btn-outline-secondary decrease-quantity" data-product-id="{{ item.product.id }}" type="button">-</button>
+                                    <input type="number" class="form-control text-center quantity-input" value="{{ item.quantity }}" min="1" data-product-id="{{ item.product.id }}">
+                                    <button class="btn btn-outline-secondary increase-quantity" data-product-id="{{ item.product.id }}" type="button">+</button>
+                                </div>
+                            </td>
+                            <td>${{ item.subtotal }}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm remove-item" data-product-id="{{ item.product.id }}">Remove</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                        <td><strong>${{ total }}</strong></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{% url 'mainapp:product_list' %}" class="btn btn-secondary">Continue Shopping</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'mainapp:checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
+            {% else %}
+                <a href="{% url 'account_login' %}" class="btn btn-primary">Login to Checkout</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="text-center mt-5">
+            <h3>Your cart is empty</h3>
+            <a href="{% url 'mainapp:product_list' %}" class="btn btn-primary mt-3">Start Shopping</a>
+        </div>
+    {% endif %}
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to update quantity
+    function updateQuantity(productId, newQuantity) {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const formData = new FormData();
+        formData.append('product_id', productId);
+        formData.append('quantity', newQuantity);
+
+        fetch('{% url "mainapp:cart_update" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.message || 'Failed to update cart');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Update the UI with new values
+                const subtotalElement = document.querySelector(`tr[data-product-id="${productId}"] td:nth-child(4)`);
+                if (subtotalElement) {
+                    subtotalElement.textContent = `$${data.subtotal}`;
+                }
+                
+                // Update total
+                const totalElement = document.querySelector('tfoot td:nth-child(2)');
+                if (totalElement) {
+                    totalElement.textContent = `$${data.total}`;
+                }
+                
+                // Update cart count
+                const cartCountElement = document.querySelector('.cart-count');
+                if (cartCountElement) {
+                    cartCountElement.textContent = data.cart_count;
+                }
+            } else {
+                throw new Error(data.message || 'Failed to update cart');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(error.message);
+        });
+    }
+
+    // Event listeners for quantity buttons
+    document.querySelectorAll('.decrease-quantity').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const input = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
+            const currentValue = parseInt(input.value);
+            if (currentValue > 1) {
+                input.value = currentValue - 1;
+                updateQuantity(productId, currentValue - 1);
+            }
+        });
+    });
+
+    document.querySelectorAll('.increase-quantity').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const input = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
+            const currentValue = parseInt(input.value);
+            input.value = currentValue + 1;
+            updateQuantity(productId, currentValue + 1);
+        });
+    });
+
+    // Event listener for quantity input changes
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('change', function() {
+            const productId = this.dataset.productId;
+            const newValue = parseInt(this.value);
+            if (newValue > 0) {
+                updateQuantity(productId, newValue);
+            } else {
+                this.value = 1;
+                updateQuantity(productId, 1);
+            }
+        });
+    });
+
+    // Event listener for remove buttons
+    document.querySelectorAll('.remove-item').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const row = this.closest('tr');
+            
+            fetch('{% url "mainapp:cart_remove" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ product_id: productId })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.message || 'Failed to remove item');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Remove the row from the table
+                    row.remove();
+                    
+                    // Update total
+                    const totalElement = document.querySelector('tfoot td:nth-child(2)');
+                    if (totalElement) {
+                        totalElement.textContent = `$${data.total}`;
+                    }
+                    
+                    // Update cart count
+                    const cartCountElement = document.querySelector('.cart-count');
+                    if (cartCountElement) {
+                        cartCountElement.textContent = data.cart_count;
+                    }
+                    
+                    // If cart is empty, show empty cart message
+                    if (data.cart_count === 0) {
+                        location.reload();
+                    }
+                } else {
+                    throw new Error(data.message || 'Failed to remove item');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message);
+            });
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 

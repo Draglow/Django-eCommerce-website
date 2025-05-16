@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Order #{{ order.id }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Order Information</h5>
+                            <p><strong>Date:</strong> {{ order.created_at|date:"F j, Y" }}</p>
+                            <p><strong>Status:</strong> 
+                                <span class="badge {% if order.status == 'pending' %}bg-warning{% elif order.status == 'processing' %}bg-info{% elif order.status == 'shipped' %}bg-primary{% elif order.status == 'delivered' %}bg-success{% elif order.status == 'cancelled' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                    {{ order.status|title }}
+                                </span>
+                            </p>
+                            <p><strong>Payment Method:</strong> {{ order.get_payment_method_display }}</p>
+                            <p><strong>Payment Status:</strong> 
+                                <span class="badge {% if order.paid %}bg-success{% else %}bg-danger{% endif %}">
+                                    {% if order.paid %}Paid{% else %}Unpaid{% endif %}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Shipping Information</h5>
+                            <p><strong>Name:</strong> {{ order.first_name }} {{ order.last_name }}</p>
+                            <p><strong>Email:</strong> {{ order.email }}</p>
+                            <p><strong>Phone:</strong> {{ order.phone }}</p>
+                            <p><strong>Address:</strong> {{ order.address }}</p>
+                            <p><strong>City:</strong> {{ order.city }}, {{ order.postal_code }}</p>
+                            <p><strong>Country:</strong> {{ order.country.name }}</p>
+                        </div>
+                    </div>
+
+                    <h5>Order Items</h5>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items.all %}
+                                <tr>
+                                    <td>{{ item.product.name }}</td>
+                                    <td>${{ item.price }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>${{ item.get_cost }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                    <td><strong>${{ order.get_total_cost }}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'mainapp:orders' %}" class="btn btn-secondary">Back to Orders</a>
+                        {% if not order.paid %}
+                        <div>
+                            {% if order.payment_method == 'paypal' %}
+                            <a href="{% url 'mainapp:paypal_payment' order.id %}" class="btn btn-primary">Pay with PayPal</a>
+                            {% elif order.payment_method == 'telebirr' %}
+                            <a href="{% url 'mainapp:telebirr_payment' order.id %}" class="btn btn-primary">Pay with Telebirr</a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

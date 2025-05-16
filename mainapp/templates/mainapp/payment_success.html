@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment Successful{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h2 class="card-title mb-4">Payment Successful!</h2>
+                    <p class="card-text mb-4">Thank you for your payment. Your order has been processed successfully.</p>
+                    <div class="payment-details mb-4">
+                        <p><strong>Transaction ID:</strong> {{ transaction_id }}</p>
+                        <p><strong>Amount Paid:</strong> {{ amount }} ETB</p>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'mainapp:order_detail' order_id=order.id %}" class="btn btn-primary">
+                            View Order Details
+                        </a>
+                        <a href="{% url 'mainapp:home' %}" class="btn btn-outline-secondary">
+                            Continue Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

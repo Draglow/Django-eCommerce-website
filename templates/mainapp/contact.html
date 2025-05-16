@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - CureCom{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="contact-hero py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h1 class="display-4 fw-bold mb-4">Get in Touch</h1>
+                <p class="lead text-muted">We're here to help and answer any questions you might have. We look forward to hearing from you.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Information -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <div class="icon-box bg-primary bg-opacity-10 rounded-3 p-3 mb-4 mx-auto">
+                            <i class="fas fa-map-marker-alt text-primary fa-2x"></i>
+                        </div>
+                        <h4 class="h5 mb-3">Our Location</h4>
+                        <p class="text-muted mb-0">Bole steet, Addis Ababa</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <div class="icon-box bg-primary bg-opacity-10 rounded-3 p-3 mb-4 mx-auto">
+                            <i class="fas fa-phone text-primary fa-2x"></i>
+                        </div>
+                        <h4 class="h5 mb-3">Phone Number</h4>
+                        <p class="text-muted mb-0">+251911234567<br>Mon-Fri: 9am-6pm</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <div class="icon-box bg-primary bg-opacity-10 rounded-3 p-3 mb-4 mx-auto">
+                            <i class="fas fa-envelope text-primary fa-2x"></i>
+                        </div>
+                        <h4 class="h5 mb-3">Email Address</h4>
+                        <p class="text-muted mb-0">info@gebeya.com<br>support@gebeya.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Form and Map -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Contact Form -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="h4 mb-4">Send us a Message</h3>
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required>
+                                        <label for="name">Your Name</label>
+                                        <div class="invalid-feedback">
+                                            Please enter your name.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Your Email" required>
+                                        <label for="email">Your Email</label>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid email address.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" required>
+                                        <label for="subject">Subject</label>
+                                        <div class="invalid-feedback">
+                                            Please enter a subject.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-floating mb-3">
+                                        <textarea class="form-control" id="message" name="message" placeholder="Your Message" style="height: 150px" required></textarea>
+                                        <label for="message">Your Message</label>
+                                        <div class="invalid-feedback">
+                                            Please enter your message.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">Send Message</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-0">
+                        <div class="map-container" style="height: 100%; min-height: 400px;">
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.755130348884!2d38.7634506!3d9.0107933!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b85cef5ab402d%3A0x8467b6b037a24d49!2sAddis%20Ababa%2C%20Ethiopia!5e0!3m2!1sen!2sus!4v1710000000000!5m2!1sen!2sus"
+                                width="100%" 
+                                height="100%" 
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Frequently Asked Questions</h2>
+            <p class="text-muted">Find quick answers to common questions</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item border-0 mb-3 shadow-sm">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                How can I track my order?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Once your order is shipped, you'll receive a tracking number via email. You can use this number to track your package on our website or the carrier's website.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border-0 mb-3 shadow-sm">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                What is your return policy?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We accept returns within 30 days of purchase. Items must be unopened and in their original packaging. Please contact our customer service for return instructions.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border-0 mb-3 shadow-sm">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                How do I contact customer support?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                You can reach our customer support team via email at support@curecom.com or by phone at +1 (555) 123-4567. We're available Monday through Friday, 9am to 6pm EST.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .contact-hero {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 6rem 0;
+    }
+
+    .icon-box {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+
+    .form-floating > .form-control {
+        height: calc(3.5rem + 2px);
+        padding: 1rem 0.75rem;
+    }
+
+    .form-floating > label {
+        padding: 1rem 0.75rem;
+    }
+
+    .accordion-button {
+        font-weight: 500;
+        padding: 1.25rem;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: rgba(0,0,0,.125);
+    }
+
+    .map-container {
+        border-radius: var(--radius-md);
+        overflow: hidden;
+    }
+
+    @media (max-width: 768px) {
+        .contact-hero {
+            padding: 4rem 0;
+        }
+
+        .display-4 {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Form validation
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+{% endblock %} 

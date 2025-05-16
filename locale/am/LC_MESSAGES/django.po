@@ -1,0 +1,100 @@
+# Amharic translations for Django project
+# Copyright (C) 2024
+# This file is distributed under the same license as the Django project.
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-04-24 12:00+0000\n"
+"PO-Revision-Date: 2024-04-24 12:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Amharic\n"
+"Language: am\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: templates/base.html
+msgid "Home"
+msgstr "ዋና ገጽ"
+
+#: templates/base.html
+msgid "Products"
+msgstr "ምርቶች"
+
+#: templates/base.html
+msgid "About"
+msgstr "ስለ እኛ"
+
+#: templates/base.html
+msgid "Contact"
+msgstr "አግኙን"
+
+#: templates/base.html
+msgid "Search products..."
+msgstr "ምርቶችን ፈልግ..."
+
+#: templates/base.html
+msgid "Profile"
+msgstr "መገለጫ"
+
+#: templates/base.html
+msgid "Orders"
+msgstr "ትዕዛዞች"
+
+#: templates/base.html
+msgid "Logout"
+msgstr "ውጣ"
+
+#: templates/base.html
+msgid "Sign In"
+msgstr "ግባ"
+
+#: templates/base.html
+msgid "Sign Up"
+msgstr "ይመዝገቡ"
+
+#: templates/base.html
+msgid "Your trusted destination for health and beauty products. Quality products for your well-being."
+msgstr "ለጤና እና ውበት ምርቶች የታመነ መድረሻ። ለጤናዎ ጥራት ያላቸው ምርቶች።"
+
+#: templates/base.html
+msgid "All Products"
+msgstr "ሁሉም ምርቶች"
+
+#: templates/base.html
+msgid "Health"
+msgstr "ጤና"
+
+#: templates/base.html
+msgid "Beauty"
+msgstr "ውበት"
+
+#: templates/base.html
+msgid "Wellness"
+msgstr "ደህንነት"
+
+#: templates/base.html
+msgid "My Profile"
+msgstr "የእኔ መገለጫ"
+
+#: templates/base.html
+msgid "Order History"
+msgstr "የትዕዛዝ ታሪክ"
+
+#: templates/base.html
+msgid "Shopping Cart"
+msgstr "የግዢ ጋሪ"
+
+#: templates/base.html
+msgid "Privacy Policy"
+msgstr "የግል የሆነ መረጃ ፖሊሲ"
+
+#: templates/base.html
+msgid "Terms of Service"
+msgstr "የአገልግሎት ውሎች"
+
+#: templates/base.html
+msgid "Shipping & Returns"
+msgstr "ማጓጓዣ እና መመለስ"

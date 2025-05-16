@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Products - E-Commerce Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="section-title">My Products</h1>
+        <a href="{% url 'mainapp:create_product' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Product
+        </a>
+    </div>
+
+    {% if products %}
+    <div class="row g-4">
+        {% for product in products %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="position-relative">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+                         class="card-img-top" style="height: 250px; object-fit: cover;">
+                    {% if not product.is_active %}
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <span class="badge bg-warning">Inactive</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="text-muted small mb-2">{{ product.category.name }}</p>
+                    <p class="card-text">{{ product.description|truncatewords:20 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="h5 mb-0 text-primary">${{ product.price }}</span>
+                        <div class="btn-group">
+                            <a href="{% url 'mainapp:edit_product' product.slug %}" 
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <button type="button" class="btn btn-sm btn-outline-danger" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#deleteModal{{ product.id }}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteModal{{ product.id }}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm Delete</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete "{{ product.name }}"?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form action="{% url 'mainapp:delete_product' product.slug %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+        <p class="text-muted h5">You haven't listed any products yet.</p>
+        <a href="{% url 'mainapp:create_product' %}" class="btn btn-primary mt-3">
+            <i class="fas fa-plus"></i> Add Your First Product
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

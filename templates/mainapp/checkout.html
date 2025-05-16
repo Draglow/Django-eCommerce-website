@@ -1,0 +1,586 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+    <div class="checkout-wrapper">
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <div class="summary-card">
+                <div class="summary-header">
+                    <h2>Order Summary</h2>
+                    <span class="badge">{{ cart.items.count }} items</span>
+                </div>
+                <div class="order-items">
+                    {% for item in cart.items.all %}
+                    <div class="order-item">
+                        <div class="item-image">
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" 
+                                 class="img-fluid">
+                        </div>
+                        <div class="item-details">
+                            <h3>{{ item.product.name }}</h3>
+                            <div class="item-meta">
+                                <span class="quantity">Qty: {{ item.quantity }}</span>
+                                <span class="price">${{ item.get_cost }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="order-total">
+                    <div class="total-row">
+                        <span>Subtotal</span>
+                        <span class="subtotal">${{ cart.get_total }}</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Shipping</span>
+                        <span>Free</span>
+                    </div>
+                    <div class="total-row final">
+                        <span>Total</span>
+                        <span class="cart-total">${{ cart.get_total }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Checkout Form -->
+        <div class="checkout-form">
+            <div class="form-card">
+                <div class="form-header">
+                    <h2>Shipping Information</h2>
+                </div>
+                <form method="post" id="checkout-form" action="{% url 'mainapp:checkout' %}" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="first_name">First name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" 
+                                   value="{{ form.first_name.value|default:user.first_name }}" required>
+                            <div class="invalid-feedback">Please enter your first name.</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="last_name">Last name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" 
+                                   value="{{ form.last_name.value|default:user.last_name }}" required>
+                            <div class="invalid-feedback">Please enter your last name.</div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{{ form.email.value|default:user.email }}" required>
+                            <div class="invalid-feedback">Please enter a valid email address.</div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="phone">Phone</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" required>
+                            <div class="invalid-feedback">Please enter your phone number.</div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="address">Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                            <div class="invalid-feedback">Please enter your shipping address.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <select class="form-select" id="country" name="country" required>
+                                <option value="">Choose...</option>
+                                <option value="ET">Ethiopia</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a country.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" class="form-control" id="city" name="city" required>
+                            <div class="invalid-feedback">Please enter your city.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="postal_code">Postal Code</label>
+                            <input type="text" class="form-control" id="postal_code" name="postal_code" required>
+                            <div class="invalid-feedback">Please enter your postal code.</div>
+                        </div>
+                    </div>
+
+                    <div class="payment-section">
+                        <h3>Payment Method</h3>
+                        <div class="payment-methods">
+                            <div class="payment-method">
+                                <input type="radio" id="telebirr" name="payment_method" value="telebirr" checked required>
+                                <label for="telebirr">
+                                    <img src="{% static 'images/telebirr.png' %}" alt="Telebirr" class="payment-icon">
+                                    <span>Telebirr</span>
+                                </label>
+                            </div>
+                            <div class="payment-method">
+                                <input type="radio" id="paypal" name="payment_method" value="paypal" required>
+                                <label for="paypal">
+                                    <img src="{% static 'images/paypal.png' %}" alt="PayPal" class="payment-icon">
+                                    <span>PayPal</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-button">
+                        <span class="spinner"></span>
+                        <span class="button-text">Place Order</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container"></div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Base Styles */
+    .checkout-container {
+        padding: 2rem;
+        min-height: 100vh;
+        background-color: #f8f9fa;
+    }
+
+    .checkout-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 2rem;
+    }
+
+    /* Order Summary */
+    .order-summary {
+        position: sticky;
+        top: 2rem;
+        height: fit-content;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .summary-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .summary-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+    }
+
+    .badge {
+        background: #007bff;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.875rem;
+    }
+
+    .order-items {
+        margin-bottom: 1.5rem;
+    }
+
+    .order-item {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .item-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    .item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .item-details h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1rem;
+    }
+
+    .item-meta {
+        display: flex;
+        justify-content: space-between;
+        color: #666;
+        font-size: 0.875rem;
+    }
+
+    .order-total {
+        padding-top: 1rem;
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem 0;
+    }
+
+    .total-row.final {
+        border-top: 2px solid #eee;
+        margin-top: 1rem;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    /* Checkout Form */
+    .checkout-form {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-header h2 {
+        margin: 0 0 2rem 0;
+        font-size: 1.5rem;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-control, .form-select {
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        outline: none;
+    }
+
+    /* Payment Section */
+    .payment-section {
+        margin: 2rem 0;
+    }
+
+    .payment-section h3 {
+        margin-bottom: 1.5rem;
+        font-size: 1.25rem;
+    }
+
+    .payment-methods {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .payment-method {
+        position: relative;
+    }
+
+    .payment-method input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+    }
+
+    .payment-method label {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border: 2px solid #ddd;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .payment-method input[type="radio"]:checked + label {
+        border-color: #007bff;
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+
+    .payment-icon {
+        height: 24px;
+        width: auto;
+    }
+
+    /* Submit Button */
+    .submit-button {
+        width: 100%;
+        padding: 1rem;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .submit-button:hover {
+        background: #0056b3;
+    }
+
+    .submit-button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+
+    .spinner {
+        width: 1.5rem;
+        height: 1.5rem;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+        display: none;
+    }
+
+    .submit-button:disabled .spinner {
+        display: block;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Toast */
+    .toast-container {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 1000;
+    }
+
+    .toast {
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+        .checkout-wrapper {
+            grid-template-columns: 1fr 1.2fr;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .checkout-wrapper {
+            grid-template-columns: 1fr;
+        }
+
+        .order-summary {
+            position: static;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .checkout-container {
+            padding: 1rem;
+        }
+
+        .summary-card, .checkout-form {
+            padding: 1.5rem;
+        }
+
+        .payment-methods {
+            grid-template-columns: 1fr;
+        }
+
+        .order-item {
+            grid-template-columns: 60px 1fr;
+        }
+
+        .item-image {
+            width: 60px;
+            height: 60px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .checkout-container {
+            padding: 0.5rem;
+        }
+
+        .summary-card, .checkout-form {
+            padding: 1rem;
+        }
+
+        .summary-header h2 {
+            font-size: 1.25rem;
+        }
+
+        .form-header h2 {
+            font-size: 1.25rem;
+        }
+
+        .submit-button {
+            font-size: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    // Form submission
+    $('#checkout-form').on('submit', function(e) {
+        e.preventDefault();
+        console.log('Form submission started');
+        
+        const form = $(this);
+        const submitBtn = form.find('.submit-button');
+        const spinner = submitBtn.find('.spinner');
+        const buttonText = submitBtn.find('.button-text');
+        
+        // Show loading state
+        submitBtn.prop('disabled', true);
+        spinner.show();
+        buttonText.text('Processing...');
+        
+        // Get form data
+        const formData = new FormData(this);
+        
+        // Add CSRF token to headers
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        // Submit form
+        $.ajax({
+            url: "{% url 'mainapp:checkout' %}",  // Use Django URL template tag
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Form submitted successfully');
+                if (response.redirect_url) {
+                    window.location.href = response.redirect_url;
+                } else {
+                    window.location.reload();
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Form submission error:', error);
+                console.error('Response:', xhr.responseText);
+                submitBtn.prop('disabled', false);
+                spinner.hide();
+                buttonText.text('Place Order');
+                
+                // Show error message
+                let errorMessage = 'An error occurred. Please try again.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                showToast('Error', errorMessage, 'danger');
+            }
+        });
+    });
+
+    // Show toast message
+    function showToast(title, message, type) {
+        const toast = `
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header bg-${type} text-white">
+                    <strong class="me-auto">${title}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            </div>
+        `;
+        $('.toast-container').append(toast);
+        const toastElement = $('.toast').last();
+        const bsToast = new bootstrap.Toast(toastElement);
+        bsToast.show();
+
+        toastElement.on('hidden.bs.toast', function() {
+            $(this).remove();
+        });
+    }
+
+    // Remove invalid class on input change
+    $('input, select').on('change', function() {
+        $(this).removeClass('is-invalid');
+    });
+});
+</script>
+{% endblock %} 

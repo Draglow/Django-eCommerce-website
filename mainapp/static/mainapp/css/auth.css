@@ -1,0 +1,25 @@
+/* Style form inputs */
+input[type="text"],
+input[type="password"] {
+    @apply appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm;
+}
+
+/* Style the first input */
+input[type="text"]:first-of-type {
+    @apply rounded-t-md;
+}
+
+/* Style the last input */
+input[type="password"]:last-of-type {
+    @apply rounded-b-md;
+}
+
+/* Style error messages */
+.errorlist {
+    @apply text-red-500 text-sm mt-1;
+}
+
+/* Style form errors */
+.form-error {
+    @apply text-red-500 text-sm mt-1;
+} 

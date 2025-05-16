@@ -1,0 +1,528 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Admin Dashboard" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #dedee6;
+        --primary-light: #6366f1;
+        --secondary-color: #10b981;
+        --danger-color: #ef4444;
+        --warning-color: #f59e0b;
+        --success-color: #10b981;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --bg-primary: #f9fafb;
+        --bg-secondary: #ffffff;
+        --border-color: #e5e7eb;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 1rem;
+        --transition: all 0.3s ease;
+    }
+
+    body {
+        background: var(--bg-primary);
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        color: var(--text-primary);
+        line-height: 1.5;
+    }
+
+    .dashboard-wrapper {
+        display: grid;
+        grid-template-columns: minmax(280px, 300px) 1fr;
+        min-height: 100vh;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .sidebar {
+        background: var(--bg-secondary);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        height: calc(100vh - 3rem);
+        position: sticky;
+        top: 1.5rem;
+        box-shadow: var(--shadow-md);
+        overflow-y: auto;
+    }
+
+    .sidebar-header {
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 1.5rem;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: var(--text-secondary);
+        border-radius: var(--radius-md);
+        transition: var(--transition);
+        margin-bottom: 0.5rem;
+    }
+
+    .nav-link:hover, .nav-link.active {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .nav-link i {
+        width: 1.25rem;
+        text-align: center;
+    }
+
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .stat-card {
+        background: var(--bg-secondary);
+        padding: 1.5rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .stat-card .icon {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .stat-card h3 {
+        font-size: 1.875rem;
+        font-weight: 600;
+        margin: 0.5rem 0;
+    }
+
+    .stat-card p {
+        color: var(--text-secondary);
+        margin: 0;
+    }
+
+    .chart-card {
+        background: var(--bg-secondary);
+        padding: 1.5rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .recent-orders {
+        background: var(--bg-secondary);
+        padding: 1.5rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table th {
+        background: var(--bg-primary);
+        padding: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        color: var(--text-secondary);
+    }
+
+    .table td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .badge-success { background: var(--success-color); color: white; }
+    .badge-warning { background: var(--warning-color); color: white; }
+    .badge-danger { background: var(--danger-color); color: white; }
+
+    .top-products {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+    }
+
+    .product-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+    }
+
+    .product-item:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .product-item img {
+        width: 48px;
+        height: 48px;
+        object-fit: cover;
+        border-radius: var(--radius-md);
+    }
+
+    .product-info {
+        flex: 1;
+    }
+
+    .product-info h6 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .product-info small {
+        color: var(--text-secondary);
+    }
+
+    .product-stats {
+        text-align: right;
+    }
+
+    .product-stats h6 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .product-stats small {
+        color: var(--text-secondary);
+    }
+
+    @media (max-width: 1024px) {
+        .dashboard-wrapper {
+            grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .sidebar.show {
+            left: 0;
+        }
+
+        .main-content {
+            margin-left: 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-wrapper {
+            padding: 1rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .top-products {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .top-bar {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="d-flex align-items-center">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" class="me-2" style="height: 40px;">
+                <h4 class="mb-0">Admin Panel</h4>
+            </div>
+        </div>
+        <nav>
+            <a href="{% url 'mainapp:admin_dashboard' %}" class="nav-link active">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{% url 'mainapp:users' %}" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </a>
+            <a href="{% url 'mainapp:product_list' %}" class="nav-link">
+                <i class="fas fa-box"></i>
+                <span>Products</span>
+            </a>
+            <a href="{% url 'mainapp:orders' %}" class="nav-link">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Orders</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-chart-line"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <h2 class="mb-0">Dashboard Overview</h2>
+            <div class="d-flex gap-3">
+                <button class="btn btn-link d-lg-none" id="sidebarToggle">
+                    <i class="fas fa-bars fa-lg"></i>
+                </button>
+                <div class="dropdown">
+                    <button class="btn btn-link dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                        <img src="{% static 'img/avatar.png' %}" alt="User" class="rounded-circle" style="width: 40px; height: 40px;">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'mainapp:logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-dollar-sign icon"></i>
+                <p>Today's Sales</p>
+                <h3>${{ sales_today }}</h3>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-chart-line icon"></i>
+                <p>Weekly Sales</p>
+                <h3>${{ sales_week }}</h3>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-calendar-alt icon"></i>
+                <p>Monthly Sales</p>
+                <h3>${{ sales_month }}</h3>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-exclamation-triangle icon"></i>
+                <p>Low Stock Alerts</p>
+                <h3>{{ low_stock_products|length }}</h3>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="chart-card">
+            <h4 class="mb-4">Revenue Overview</h4>
+            <div class="chart-container" style="height: 300px;">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="recent-orders">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0">Recent Orders</h4>
+                <a href="{% url 'mainapp:orders' %}" class="btn btn-primary">
+                    View All
+                </a>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in recent_orders %}
+                        <tr>
+                            <td>#{{ order.id }}</td>
+                            <td>{{ order.user.username }}</td>
+                            <td>{{ order.created_at|date:"M d, Y" }}</td>
+                            <td>${{ order.total }}</td>
+                            <td>
+                                <span class="badge badge-{{ order.status|lower }}">
+                                    {{ order.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Top Products -->
+        <div class="glass-card">
+            <h4 class="mb-4">Top Products</h4>
+            <div class="top-products">
+                {% for product in top_products %}
+                <div class="product-item">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    <div class="product-info">
+                        <h6>{{ product.name }}</h6>
+                        <small>Sold: {{ product.sold_count }}</small>
+                    </div>
+                    <div class="product-stats">
+                        <h6>${{ product.revenue }}</h6>
+                        <small class="text-{% if product.revenue_growth >= 0 %}success{% else %}danger{% endif %}">
+                            {{ product.revenue_growth }}%
+                        </small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Revenue Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Revenue',
+                data: [12000, 19000, 15000, 25000, 22000, 30000],
+                borderColor: '#4f46e5',
+                backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                tension: 0.4,
+                fill: true,
+                borderWidth: 2,
+                pointRadius: 4,
+                pointBackgroundColor: '#4f46e5',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointHoverRadius: 6,
+                pointHoverBackgroundColor: '#4f46e5',
+                pointHoverBorderColor: '#fff',
+                pointHoverBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: {
+                        family: 'Inter',
+                        size: 14
+                    },
+                    bodyFont: {
+                        family: 'Inter',
+                        size: 13
+                    },
+                    padding: 12,
+                    cornerRadius: 8,
+                    displayColors: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        display: true,
+                        drawBorder: false,
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    },
+                    ticks: {
+                        font: {
+                            family: 'Inter',
+                            size: 12
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            family: 'Inter',
+                            size: 12
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Sidebar Toggle
+    document.getElementById('sidebarToggle').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.toggle('show');
+    });
+</script>
+{% endblock %} 

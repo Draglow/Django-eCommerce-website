@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Conversation - E-Commerce Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <div class="d-flex align-items-center">
+                        <img src="{{ conversation.product.image.url }}" 
+                             alt="{{ conversation.product.name }}"
+                             class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                        <div class="ms-3">
+                            <h5 class="mb-1">{{ conversation.product.name }}</h5>
+                            <p class="text-muted small mb-0">
+                                {% if conversation.buyer == user %}
+                                Seller: {{ conversation.seller.username }}
+                                {% else %}
+                                Buyer: {{ conversation.buyer.username }}
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body p-0">
+                    <div class="chat-messages p-4" style="height: 400px; overflow-y: auto;">
+                        {% for message in messages %}
+                        <div class="message mb-3 {% if message.sender == user %}text-end{% endif %}">
+                            <div class="d-flex {% if message.sender == user %}justify-content-end{% endif %}">
+                                <div class="message-content {% if message.sender == user %}bg-primary text-white{% else %}bg-light{% endif %} p-3 rounded" 
+                                     style="max-width: 70%;">
+                                    {{ message.content }}
+                                    <div class="small text-muted mt-1">
+                                        {{ message.created_at|time }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-comments fa-3x mb-3"></i>
+                            <p>No messages yet. Start the conversation!</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="card-footer bg-white border-0 p-3">
+                        <form method="POST" class="d-flex">
+                            {% csrf_token %}
+                            {{ form.content }}
+                            <button type="submit" class="btn btn-primary ms-2">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .chat-messages {
+        scrollbar-width: thin;
+        scrollbar-color: var(--primary-color) transparent;
+    }
+    
+    .chat-messages::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color);
+        border-radius: 3px;
+    }
+    
+    .message-content {
+        position: relative;
+    }
+    
+    .message-content:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border: 10px solid transparent;
+    }
+    
+    .message:not(.text-end) .message-content:after {
+        left: 0;
+        border-right-color: var(--bg-light);
+        border-left: 0;
+    }
+    
+    .message.text-end .message-content:after {
+        right: 0;
+        border-left-color: var(--primary-color);
+        border-right: 0;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatMessages = document.querySelector('.chat-messages');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+</script>
+{% endblock %} 
