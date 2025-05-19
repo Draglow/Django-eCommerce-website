@@ -37,16 +37,12 @@ Live Demo: **[Coming Soon]**
 
 ---
 
-## 📁 Folder Structure
-
-
----
 
 ## 🔧 Installation
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/eCommerce-website.git
+git clone https://github.com/Draglow/Django-eCommerce-website
 cd eCommerce-website
 
 # 2. Create virtual environment
