@@ -1,4 +1,4 @@
-# 🛒 Django E-Commerce Website
+# 🛒 Django E-Commerce Website called ገበያ
 
 A full-featured and modern **E-Commerce platform** built with **Django**. The site supports user registration, dynamic cart management, order processing, product categorization, and real-time updates—all designed with a clean, responsive UI.
 
