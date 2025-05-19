@@ -9,7 +9,7 @@ A full-featured and modern **E-Commerce platform** built with **Django**. The si
 
 ## 📸 Demo
 
-![Demo Screenshot](https://user-images.githubusercontent.com/yourusername/demo-screenshot.png)
+![Demo Screenshot](https://i.imgur.com/cG1i2JO.png)
 
 Live Demo: **[Coming Soon]**
 
