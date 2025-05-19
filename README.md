@@ -38,7 +38,7 @@ Live Demo: **[Coming Soon]**
 ### Setup
 1. Clone the repository:
    ```sh
-   git clone https://github.com/Draglow/Django-eCommerce-website/edit/master/README.md
+   git clone https://github.com/Draglow/Django-eCommerce-website
    
    ```
 2. Create and activate a virtual environment:
